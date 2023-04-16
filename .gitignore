@@ -152,3 +152,4 @@ dmypy.json
 .pyre/
 llama-*
 vicuna-*
+.DS_Store

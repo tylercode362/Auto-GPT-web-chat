@@ -1,6 +1,6 @@
 import time
-
-import openai
+import requests
+import json
 from openai.error import APIError, RateLimitError
 from colorama import Fore
 
@@ -8,41 +8,33 @@ from autogpt.config import Config
 
 cfg = Config()
 
-openai.api_key = cfg.openai_api_key
+api_url = "http://localhost:3000/send-message"
 
 
-# Overly simple abstraction until we create something better
-# simple retry mechanism when getting a rate error or a bad gateway
 def create_chat_completion(
     messages, model=None, temperature=cfg.temperature, max_tokens=None
 ) -> str:
-    """Create a chat completion using the OpenAI API"""
+    """Create a chat completion using the custom API"""
     response = None
     num_retries = 5
+    headers = {"Content-Type": "application/json"}
+
     if cfg.debug_mode:
         print(
             Fore.GREEN
             + f"Creating chat completion with model {model}, temperature {temperature},"
             f" max_tokens {max_tokens}" + Fore.RESET
         )
+
     for attempt in range(num_retries):
         try:
-            if cfg.use_azure:
-                response = openai.ChatCompletion.create(
-                    deployment_id=cfg.get_azure_deployment_id_for_model(model),
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+            data = {"message": json.dumps(messages)}
+            response = requests.post(api_url, headers=headers, data=json.dumps(data), timeout=120)
+
+            if response.status_code == 200:
+                break
             else:
-                response = openai.ChatCompletion.create(
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            break
+                raise APIError("Non-200 status code received")
         except RateLimitError:
             if cfg.debug_mode:
                 print(
@@ -66,4 +58,5 @@ def create_chat_completion(
     if response is None:
         raise RuntimeError("Failed to get response after 5 retries")
 
-    return response.choices[0].message["content"]
+    response_json = response.json()
+    return response_json["data"]

@@ -7,7 +7,7 @@ import orjson
 
 from autogpt.memory.base import MemoryProviderSingleton, get_ada_embedding
 
-EMBED_DIM = 1536
+EMBED_DIM = 300
 SAVE_OPTIONS = orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_SERIALIZE_DATACLASS
 
 

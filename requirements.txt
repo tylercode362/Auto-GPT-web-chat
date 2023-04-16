@@ -24,3 +24,7 @@ pre-commit
 black
 sourcery
 isort
+numpy
+scipy
+requests
+spaCy

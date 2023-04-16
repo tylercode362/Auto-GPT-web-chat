@@ -1,25 +1,18 @@
 """Base class for memory providers."""
 import abc
 
-import openai
+import spacy
 
 from autogpt.config import AbstractSingleton, Config
 
 cfg = Config()
 
+nlp = spacy.load("en_core_web_md")
 
 def get_ada_embedding(text):
     text = text.replace("\n", " ")
-    if cfg.use_azure:
-        return openai.Embedding.create(
-            input=[text],
-            engine=cfg.get_azure_deployment_id_for_model("text-embedding-ada-002"),
-        )["data"][0]["embedding"]
-    else:
-        return openai.Embedding.create(input=[text], model="text-embedding-ada-002")[
-            "data"
-        ][0]["embedding"]
-
+    doc = nlp(text)
+    return doc.vector
 
 class MemoryProviderSingleton(AbstractSingleton):
     @abc.abstractmethod
