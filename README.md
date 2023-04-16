@@ -4,6 +4,8 @@ Source: https://github.com/Significant-Gravitas/Auto-GPT
 
 Adapted for ChatGPT Web
 
+<img width="1435" alt="" src="https://user-images.githubusercontent.com/22150402/232292523-819e5ccf-b6f3-4d44-9ed1-24638405e652.png">
+
 Installation is similar to Auto-GPT, with additional steps, and no need for an OpenAI API key.
 
 ```
