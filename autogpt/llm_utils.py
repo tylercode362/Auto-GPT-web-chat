@@ -45,7 +45,7 @@ def call_ai_function(
 
     return create_chat_completion(model=model, messages=messages, temperature=0)
 
-api_url = 'http://localhost:3000/send-message'
+api_url = 'http://localhost:3030/send-message'
 
 def create_chat_completion(
     messages: List,
