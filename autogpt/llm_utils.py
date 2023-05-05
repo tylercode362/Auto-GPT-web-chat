@@ -70,7 +70,7 @@ def create_chat_completion(
 
     for attempt in range(num_retries):
         try:
-            data = {"message": message_str}
+            data = { "message": message_str, 'onlyText': 1 }
             response = requests.post(api_url, headers=headers, data=json.dumps(data), timeout=120)
 
             if response.status_code == 200:
